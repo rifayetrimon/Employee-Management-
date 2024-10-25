@@ -1,0 +1,41 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block navbar %}
+    {% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="p-6 bg-white rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold mb-4">Events</h1>
+    
+    <!-- Search Bar -->
+    <form method="get" action="{% url 'home' %}" class="mb-4">
+        <input type="text" name="search" placeholder="Search events..." class="border p-2 rounded w-full">
+    </form>
+
+    <!-- Events List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for event in events %}
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+            <h2 class="text-xl font-semibold">{{ event.name }}</h2>
+            <p>{{ event.date }} - {{ event.location }}</p>
+            <p>{{ event.description|truncatewords:20 }}</p>
+            {% if user.is_authenticated %}
+                {% if event.is_booked %}
+                    <p class="text-green-500 font-semibold">Booked</p>
+                {% elif event.is_full %}
+                    <p class="text-red-500 font-semibold">Fully Booked</p>
+                {% else %}
+                    <a href="" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 inline-block">Book</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 inline-block">Log in to Book</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No events found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
