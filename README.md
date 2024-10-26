@@ -1,2 +1,2 @@
-# Employee-Management-
+# Event-Management-
 Event management by django
