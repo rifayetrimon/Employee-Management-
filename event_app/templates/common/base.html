@@ -27,6 +27,7 @@
             {% if user.is_authenticated %}
                 <li><a href="{% url 'create_event' %}" class="hover:underline">Create Event</a></li>
                 <li><a href="{% url 'my_events' %}" class="hover:underline">My Events</a></li>
+                <li><a href="{% url 'booked_events' %}" class="hover:underline">My Booked</a></li>
                 {% if user.username == "admin" %}
                 <li><a href="{% url 'create_category' %}" class="hover:underline">Create Category</a></li>
                 {% endif %}
@@ -40,7 +41,6 @@
     </div>
 </nav>
 
-
   {% endif %} 
 
   {% block content %}
@@ -48,23 +48,6 @@
   {% endblock content %}
 
   
-  <!-- Main Content Section -->
-  {% comment %} <div class="container mx-auto mt-6">
-    {% block content %}
-    <p>Welcome to My Django Project!</p>
-    {% endblock %}
-  </div> {% endcomment %}
 
-  <!-- Footer Section -->
-  {% comment %} {% if request.resolver_match.url_name not in 'login register' %}
-  <footer class="bg-gray-800 p-4 mt-12">
-    <div class="container mx-auto text-center text-white">
-      <p>&copy; 2024 My Django Project. All rights reserved.</p>
-    </div>
-  </footer>
-  {% endif %} {% endcomment %}
-  <!-- Additional scripts -->
-  {% comment %} {% block extra_scripts %}
-  {% endblock %} {% endcomment %}
 </body>
 </html>

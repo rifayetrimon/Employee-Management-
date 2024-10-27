@@ -52,6 +52,49 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 
+class EditProfileForm(forms.ModelForm):
+    contact = forms.CharField(
+        max_length=15,
+        required=True,
+        help_text="Enter your contact number"
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')  
+
+    def __init__(self, *args, **kwargs):
+        profile_instance = kwargs.pop('profile_instance', None)  
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+
+        self.fields['username'].widget = forms.TextInput(attrs={
+            'class': 'form-input mt-2 block w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base py-2 px-3',
+            'placeholder': 'Username'
+        })
+        self.fields['email'].widget = forms.EmailInput(attrs={
+            'class': 'form-input mt-2 block w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base py-2 px-3',
+            'placeholder': 'Email'
+        })
+
+        if profile_instance:
+            self.fields['contact'].initial = profile_instance.contact
+        self.fields['contact'].widget = forms.TextInput(attrs={
+            'class': 'form-input mt-2 block w-full bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-base py-2 px-3',
+            'placeholder': 'Contact Number'
+        })
+
+    def save(self, commit=True):
+        user = super(EditProfileForm, self).save(commit=commit)
+        if commit:
+            profile = Profile.objects.get(user=user)
+            profile.contact = self.cleaned_data['contact']
+            profile.save()
+        return user
+
+
+
+
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event

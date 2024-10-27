@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -36,13 +37,13 @@ class Event(models.Model):
         return self.bookings.count() >= self.capacity
 
 
-# class Booking(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
-#     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="bookings")
-#     booking_date = models.DateTimeField(default=timezone.now)
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="bookings")
+    booking_date = models.DateTimeField(auto_now_add=True)
 
-#     def __str__(self):
-#         return f"{self.user.username} - {self.event.name}"
+    def __str__(self):
+        return f"{self.user.username} - {self.event.name}"
 
-#     class Meta:
-#         unique_together = ('user', 'event')
+    class Meta:
+        unique_together = ('user', 'event')
