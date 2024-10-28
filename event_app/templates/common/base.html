@@ -17,7 +17,6 @@
 
 
   <!-- Navbar Section -->
-  {% if request.resolver_match.url_name not in 'login register' %}
   <nav class="bg-gray-800 p-4 text-white">
     <div class="container mx-auto flex justify-between items-center">
         <a href="{% url 'home' %}" class="text-lg font-semibold">Event Management</a>
@@ -40,8 +39,6 @@
         </ul>
     </div>
 </nav>
-
-  {% endif %} 
 
   {% block content %}
   

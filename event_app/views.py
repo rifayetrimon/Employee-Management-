@@ -63,18 +63,27 @@ def home(request):
             Q(date__icontains=search) |
             Q(location__icontains=search)
         )
-
+    
     if category_id:
         events = events.filter(category_id=category_id)
 
     events_with_status = []
 
-    for event in events:
-        is_booked = Booking.objects.filter(user=user, event=event).exists()
-        events_with_status.append({
-            'event': event,
-            'is_booked': is_booked
-        })
+    if user.is_authenticated:
+        for event in events:
+            is_booked = Booking.objects.filter(user=user, event=event).exists()
+            events_with_status.append({
+                'event': event,
+                'is_booked': is_booked
+            })
+    else:
+        for event in events:
+            is_booked = Booking.objects.filter(event=event).exists()
+            events_with_status.append({
+                'event': event,
+                'is_booked': False
+            })
+
     categories = EventCategory.objects.all()
     
     return render(request, 'home.html', {'events': events_with_status, 'user': user, 'categories': categories})
