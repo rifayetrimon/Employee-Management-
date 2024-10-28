@@ -5,6 +5,7 @@ from . forms import CustomAuthenticationForm, CustomUserCreationForm, EditProfil
 from django.contrib.auth import login, authenticate, logout
 from .models import Event, EventCategory, Booking, Profile
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -63,10 +64,8 @@ def home(request):
             Q(location__icontains=search)
         )
 
-
     if category_id:
         events = events.filter(category_id=category_id)
-
 
     events_with_status = []
 
@@ -82,14 +81,19 @@ def home(request):
 
 
 
+@login_required
 def profile(request):
+    
     return render(request, 'profile.html')
 
+
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 
+@login_required
 def create_event(request):
     if request.method == "POST":
         form = EventForm(request.POST)
@@ -105,6 +109,7 @@ def create_event(request):
     return render(request, 'create_event.html', {'form': form})
 
 
+@login_required
 def create_category(request):
     if request.method == "POST":
         form = EventCategoryForm(request.POST)
@@ -119,6 +124,7 @@ def create_category(request):
 
 
 
+@login_required
 def my_events(request):
     if request.user.username == 'admin':
         events = Event.objects.all()
@@ -129,6 +135,7 @@ def my_events(request):
 
 
 
+@login_required
 def edit_event(request, event_id):
     event = Event.objects.get(id=event_id)
 
@@ -147,6 +154,7 @@ def edit_event(request, event_id):
 
 
 
+@login_required
 def delete_event(request, event_id):
     event = Event.objects.get(id=event_id)
 
@@ -159,7 +167,7 @@ def delete_event(request, event_id):
     return redirect('my_events')
 
 
-
+@login_required
 def book_event(request, event_id):
     event = Event.objects.get(id=event_id)
 
@@ -177,12 +185,12 @@ def book_event(request, event_id):
     return redirect('booked_events')
 
 
-
+@login_required
 def booked_events(request):
     bookings = Booking.objects.filter(user=request.user).select_related('event')
     return render(request, 'booked_event.html', {'bookings': bookings})
 
-
+@login_required
 def cancel_booking(request, booking_id):
     booking = Booking.objects.get(id=booking_id)
     event = booking.event
@@ -193,7 +201,7 @@ def cancel_booking(request, booking_id):
 
 
 
-
+@login_required
 def edit_profile(request):
     profile_instance = Profile.objects.get(user=request.user)
     if request.method == 'POST':
