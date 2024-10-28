@@ -1,8 +1,10 @@
+from unicodedata import category
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from . forms import CustomAuthenticationForm, CustomUserCreationForm, EditProfileForm, EventForm,EventCategoryForm
 from django.contrib.auth import login, authenticate, logout
 from .models import Event, EventCategory, Booking, Profile
+from django.db.models import Q
 # Create your views here.
 
 
@@ -48,8 +50,23 @@ def login_view(request):
 
 
 def home(request):
-    events = Event.objects.all()
     user = request.user
+    search = request.GET.get('search')
+    category_id = request.GET.get('category')
+
+    events = Event.objects.all()
+
+    if search:
+        events = events.filter(
+            Q(name__icontains=search) |
+            Q(date__icontains=search) |
+            Q(location__icontains=search)
+        )
+
+
+    if category_id:
+        events = events.filter(category_id=category_id)
+
 
     events_with_status = []
 
@@ -59,8 +76,9 @@ def home(request):
             'event': event,
             'is_booked': is_booked
         })
+    categories = EventCategory.objects.all()
     
-    return render(request, 'home.html', {'events': events_with_status, 'user': user})
+    return render(request, 'home.html', {'events': events_with_status, 'user': user, 'categories': categories})
 
 
 
